@@ -9,6 +9,10 @@ public class Run {
 		ApplicationContext context = 
 				new ClassPathXmlApplicationContext("test01/applicationContext.xml");
 		
+		Wheel wheel = context.getBean("wheelBean", Wheel.class);
+		wheel.setRadius(10000);
+		System.out.println(context.getBean("wheelBean2"));
 		System.out.println(context.getBean("car")); //id명은 클래스명을 따라간다.
+		
 	}
 }
