@@ -21,8 +21,9 @@ public class MyAspect{
 		System.out.println("집에 간다.");
 	}
 	
-	@AfterReturning(value = "execution(* *(..))")
-	public void afterReturning() {
+	@AfterReturning(value = "execution(* *(..))", returning = "res") //사용자 코드에서 반환되는 값이 있을 때 afterReturning의 매개변수로서 사용한다.
+	public void afterReturning(Object res) {
+		System.out.println(res);
 		System.out.println("퇴근 카드를 찍는다.");
 	}
 	

@@ -14,6 +14,6 @@ public class Run {
 		
 		woman.develop();
 		System.out.println("=====================");
-		man.develop();
+		man.play();
 	}
 }
