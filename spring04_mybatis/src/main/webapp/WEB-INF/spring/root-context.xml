@@ -13,13 +13,18 @@
 	</bean>
 	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-	  <property name="dataSource" ref="dataSource" />
+	  <property name="dataSource" ref="dataSource"/>
+	  <property name="configLocation" value="classpath:mybatis/config.xml"/>
 	</bean>
 	
-	<bean id="mapperFactoryBean" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<!-- Repository를 인터페이스로 생성했을때 bean 등록 코드 -->
+	<!-- <bean id="mapperFactoryBean" class="org.mybatis.spring.mapper.MapperFactoryBean">
 	  <property name="mapperInterface" value="com.kh.spring.member.model.repository.MemberRepository"/>
 	  <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
-	</bean>
+	</bean> -->
 	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	  <constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
 	
 </beans>
