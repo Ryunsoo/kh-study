@@ -221,6 +221,30 @@
   		</set>
   		where user_id = #{userId}
   	</update>
+  	
+  	<!-- 다시해보기!! primary / property / hasSec -->
+  	<insert id="insertQuaryTest">
+  		insert into ${dataMap.tableName}
+  		<if test="dataMap.hasSec == false">
+	  		<foreach collection="dataMap.data" index="key" open="(" close=")" separator=",">
+	  			${key}
+	  		</foreach>
+	  		values
+	  		<foreach collection="data" item="val" open="(" close=")" separator=",">
+	  			#{val}
+	  		</foreach>
+  		</if>
+  		<if test="dataMap.hasSec == true">
+	  		<foreach collection="data" index="key" open="(" close="," separator=",">
+	  			${key}
+	  		</foreach>
+	  		${sec.colName} ) values
+	  		<foreach collection="data" item="val" open="(" close="," separator=",">
+	  			#{val}
+	  		</foreach>
+	  		${sec.val} )
+  		</if>
+  	</insert>
   
   
   </mapper>

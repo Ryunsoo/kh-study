@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.kh.spring.common.InsertQueryFactory;
 import com.kh.spring.member.model.dto.Member;
 
 //가상으로 만들어지는 web.xml을 사용해 테스트환경을 구축
@@ -217,6 +218,16 @@ public class MybatisTest {
 		member.setPassword("00009999");
 		member.setEmail("AAAA@AAA.com");
 		session.update(NAMESPACE + "dynamicSet", member);
+	}
+	
+	//다시하기
+	@Test
+	public void insertQuaryTest() {
+		InsertQueryFactory insertQuery = InsertQueryFactory.builder()
+						.setTableName("member").setColumn("user_id", "insert")
+						.setColumn("password", "1234").setColumn("email", "aaa@aaa.com")
+						.setColumn("tell", "000-0000-0000").build();
+		
 	}
 	
 }
