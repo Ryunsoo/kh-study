@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	
@@ -16,14 +18,11 @@
 	  <property name="configLocation" value="classpath:mybatis/config.xml"/>
 	</bean>
 	
-	<!-- Repository를 인터페이스로 생성했을때 bean 등록 코드 -->
-	<!-- <bean id="mapperFactoryBean" class="org.mybatis.spring.mapper.MapperFactoryBean">
-	  <property name="mapperInterface" value="com.kh.spring.member.model.repository.MemberRepository"/>
-	  <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
-	</bean> -->
-	
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
 	  <constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
+	
+	<!-- 추후 Service가 트랜잭션 관리를 위한 프록시객체 생성의 인터페이스로, Mapper로서도 등록되면 문제가 생긴다. -->
+	<mybatis-spring:scan base-package="com.kh.spring" annotation="org.apache.ibatis.annotations.Mapper"/>
 	
 </beans>
