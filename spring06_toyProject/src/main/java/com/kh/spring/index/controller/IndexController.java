@@ -24,7 +24,7 @@ public class IndexController {
 	//10. @CookieVariable : 원하는 cookie값을 매개변수에 바인드
 	//11. @PathVariable : url 템플릿에 담긴 파라미터값을 매개변수에 바인드
 	//12. @ResponseBody : 메서드가 반환하는 값을 응답 body에 작성
-	//13. @Servlet : 객체를 컨트롤러의 매개변수에 선언해 주입받을 수 있다.
+	//13. Servlet : 객체를 컨트롤러의 매개변수에 선언해 주입받을 수 있다.
 	//				HttpServletRequest, HttpServletResponse, HttpSession
 	
 	@GetMapping("/")

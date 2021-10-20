@@ -1,14 +1,28 @@
 package com.kh.spring.member.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.util.CookieGenerator;
 
 import com.kh.spring.member.model.dto.Member;
 import com.kh.spring.member.model.service.MemberService;
+import com.kh.spring.member.validator.JoinForm;
+import com.kh.spring.member.validator.JoinFormValidator;
 
 	//1. @Controller : 해당 클래스를 applicationContext에 bean으로 등록
 	//				Controller와 관련된 annotation을 사용할 수 있게 해준다. (Controller에서만 사용할 수 있는 annotation)
@@ -25,7 +39,7 @@ import com.kh.spring.member.model.service.MemberService;
 	//				application/x-www-form-urlEncoded를 지원하지 않는다.
 	//8. @RequestHeader : 요청 헤더를 메서드의 매개변수에 바인드
 	//9. @SessionAttribute : 원하는 session의 속성값을 매개변수에 바인드
-	//10. @CookieVariable : 원하는 cookie값을 매개변수에 바인드
+	//10. @CookieValue : 원하는 cookie값을 매개변수에 바인드
 	//11. @PathVariable : url 템플릿에 담긴 파라미터값을 매개변수에 바인드
 	//12. @ResponseBody : 메서드가 반환하는 값을 응답 body에 작성
 	//13. @Servlet : 객체를 컨트롤러의 매개변수에 선언해 주입받을 수 있다.
@@ -35,16 +49,86 @@ import com.kh.spring.member.model.service.MemberService;
 @RequestMapping("member")
 public class MemberController {
 
-	@Autowired
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	private MemberService memberService;
+	private JoinFormValidator joinFormValidator;
+	
+	public MemberController(MemberService memberService, JoinFormValidator joinFormValidator) {
+		this.memberService = memberService;
+		this.joinFormValidator = joinFormValidator;
+	}
+	
+	@InitBinder(value="joinForm")
+	public void initBinder(WebDataBinder webDataBinder) {
+		webDataBinder.addValidators(joinFormValidator);
+	}
 	
 	@GetMapping("join-form")
 	public void joinForm() {}
 	
 	@PostMapping("join")
-	public String join(Member member) {
-		memberService.insertMember(member);
+	public String join(@Validated JoinForm form,	//@Validated 어노테이션을 지정하면 해당 타입을 찾아 매칭한다.
+			Errors errors	//Errors객체는 반드시 검증될 객체 바로 뒤에 작성
+			) {
+		
+		if(errors.hasErrors()) {
+			return "member/join-form";
+		}
+		memberService.insertMember(form);
 		return "index";
+	}
+	
+	@PostMapping("join-json")
+	public String joinWithJson(@RequestBody Member member) {
+		logger.debug(member.toString());
+		return "index";
+	}
+	
+	//로그인 페이지 이동 메서드
+	//메서드명 : login
+	@GetMapping("login")
+	public void login() {}
+	
+	//로그인 실행 메서드
+	//메서드명 : loginlmpl
+	//재지정할 jsp : mypage
+	@PostMapping("login")
+	public String loginImpl(Member member, HttpSession session) {
+		Member certifiedUser = memberService.authenticateUser(member);
+		session.setAttribute("authentication", certifiedUser);
+		logger.debug(certifiedUser.toString());
+		return "redirect:/member/mypage"; //요청 재요청(response.sendRedirect())
+	}
+	
+	@GetMapping("mypage")
+	public String mypage(@CookieValue(name="JSESSIONID") String sessionId,
+						@SessionAttribute(name="authentication") Member member,
+						HttpServletResponse response) {
+		
+		//Cookie 생성 및 응답헤더에 추가
+		CookieGenerator cookieGenerator = new CookieGenerator();
+		cookieGenerator.setCookieName("testCookie");
+		cookieGenerator.addCookie(response, "test_cookie");	//cookie 내용에 띄어쓰기가 있으면 url safe하지 않아 오류발생
+		
+		logger.debug("@CookieValue : " + sessionId);
+		logger.debug("@@SessionAttribute : " + member);
+		
+		//HttpServletResponse 객체를 주입받아 사용하는 메서드에서는 반환값없이 void로 진행하면 자동 view 지정이 불가능하다.
+		return "member/mypage";
+	}
+	
+	@GetMapping("id-check")
+	@ResponseBody	//@ResponseBody가 없을 때 반환값은 포워드 경로
+	//@ResponseBody일 때 자바 빈 규약을 지킨 객체(ex_Member)를 반환할 시에, 자동으로 Json 객체로 변환해서 응답해준다.
+	public String idCheck(String userId) {
+		Member member = memberService.selectMemberByUserId(userId);
+		
+		if(member == null) {
+			return "available";
+		}else {
+			return "disable";
+		}
 	}
 	
 	
