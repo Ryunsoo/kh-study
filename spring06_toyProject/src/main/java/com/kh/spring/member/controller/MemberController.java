@@ -6,7 +6,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -17,8 +19,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.CookieGenerator;
 
+import com.kh.spring.common.code.ErrorCode;
+import com.kh.spring.common.exception.HandlableException;
+import com.kh.spring.common.validator.ValidateResult;
 import com.kh.spring.member.model.dto.Member;
 import com.kh.spring.member.model.service.MemberService;
 import com.kh.spring.member.validator.JoinForm;
@@ -59,22 +65,36 @@ public class MemberController {
 		this.joinFormValidator = joinFormValidator;
 	}
 	
-	@InitBinder(value="joinForm")
+	//Model 속성명 자동 생성 규칙
+	//com.myapp.Product becomes "product"
+	//com.myapp.MyProduct becomes "myProduct"
+	//com.myapp.UKProduct becomes "UKProduct"
+	
+	@InitBinder(value="joinForm") //model의 속성 중 속성명이 joinForm인 속성이 있는 경우 initBinder 메서드 실행
 	public void initBinder(WebDataBinder webDataBinder) {
 		webDataBinder.addValidators(joinFormValidator);
 	}
 	
-	@GetMapping("join-form")
-	public void joinForm() {}
+	@GetMapping("join")
+	public void joinForm(Model model) {
+		model.addAttribute(new JoinForm()).addAttribute("error", new ValidateResult().getError());
+	}
 	
 	@PostMapping("join")
 	public String join(@Validated JoinForm form,	//@Validated 어노테이션을 지정하면 해당 타입을 찾아 매칭한다.
-			Errors errors	//Errors객체는 반드시 검증될 객체 바로 뒤에 작성
+			Errors errors,	//Errors객체는 반드시 검증될 객체 바로 뒤에 작성
+			Model model
 			) {
 		
+		ValidateResult vr = new ValidateResult();
+		//validator에서 발생한 오류가 없어도 model에 넣어주어야 추후 템플릿 교체 후 오류가 발생하지 않는다.
+		model.addAttribute("error", vr.getError());
+		
 		if(errors.hasErrors()) {
-			return "member/join-form";
+			vr.addError(errors);
+			return "member/join";
 		}
+		
 		memberService.insertMember(form);
 		return "index";
 	}
@@ -94,8 +114,15 @@ public class MemberController {
 	//메서드명 : loginlmpl
 	//재지정할 jsp : mypage
 	@PostMapping("login")
-	public String loginImpl(Member member, HttpSession session) {
+	public String loginImpl(Member member, HttpSession session, RedirectAttributes redirectAttr) {
+		
 		Member certifiedUser = memberService.authenticateUser(member);
+		
+		if(certifiedUser == null) {
+			redirectAttr.addFlashAttribute("message", "아이디나 비밀번호가 정확하지 않습니다.");
+			return "redirect:/member/login";
+		}
+		
 		session.setAttribute("authentication", certifiedUser);
 		logger.debug(certifiedUser.toString());
 		return "redirect:/member/mypage"; //요청 재요청(response.sendRedirect())

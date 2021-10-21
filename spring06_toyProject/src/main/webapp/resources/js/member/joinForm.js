@@ -41,7 +41,7 @@
 			document.querySelector('#idCheck').innerHTML = '아이디 중복 검사를 통과하지 않았습니다.';
 		}
 		
-		if(!pwReg.test(password.value)) {
+		/*if(!pwReg.test(password.value)) {
 			e.preventDefault();
 			document.querySelector('#pwCheck').innerHTML = '비밀번호는 숫자, 영문자, 특수문자 조합의 8자리 이상 문자열입니다.';
 		}
@@ -49,6 +49,6 @@
 		if(!tellReg.test(tell.value)) {
 			e.preventDefault();
 			document.querySelector('#tellCheck').innerHTML = '휴대폰 번호는 9~11자리의 숫자입니다.';
-		}
+		}*/
 	})
 })();

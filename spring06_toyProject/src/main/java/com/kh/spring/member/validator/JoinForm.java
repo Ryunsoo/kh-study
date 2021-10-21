@@ -31,6 +31,9 @@ public class JoinForm {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+	@Override
+	public String toString() {
+		return "JoinForm [userId=" + userId + ", password=" + password + ", tell=" + tell + ", email=" + email + "]";
+	}
 	
 }
