@@ -3,10 +3,10 @@ package com.kh.spring.common.code;
 public enum Config {
 
 	//DOMAIN("http://pclass.ga"),
-	DOMAIL("http://localhost:9090"),
-	COMPANY_EMAIL("babyfox225@gmail.com"),
-	SMTP_AUTHENTICATION_ID("babyfox225@gmail.com"),
-	SMTP_AUTHENTICATION_PASSWORD("hrs1672^^"),
+	DOMAIL("http://localhost:8989"),
+	COMPANY_EMAIL("medibook90@gmail.com"),
+	SMTP_AUTHENTICATION_ID("medibook90@gmail.com"),
+	SMTP_AUTHENTICATION_PASSWORD("Qwer1234qwer"),
 	UPLOAD_PATH("C:\\CODE\\upload\\");
 	
 	public final String DESC;
