@@ -3,7 +3,7 @@ package com.kh.spring.common.code;
 public enum Config {
 
 	//DOMAIN("http://pclass.ga"),
-	DOMAIL("http://localhost:8989"),
+	DOMAIN("http://localhost:8989"),
 	COMPANY_EMAIL("medibook90@gmail.com"),
 	SMTP_AUTHENTICATION_ID("medibook90@gmail.com"),
 	SMTP_AUTHENTICATION_PASSWORD("Qwer1234qwer"),

@@ -51,7 +51,7 @@ public class MemberService {
 		
 		//RestTemplate의 기본 Content-type : application/json
 		RequestEntity<MultiValueMap<String, String>> request = 
-				RequestEntity.post(Config.DOMAIL.DESC + "/mail")
+				RequestEntity.post(Config.DOMAIN.DESC + "/mail")
 				.accept(MediaType.APPLICATION_FORM_URLENCODED)
 				.body(body);
 		
