@@ -2,6 +2,8 @@ package com.kh.spring.common.util.file;
 
 import java.sql.Date;
 
+import com.kh.spring.common.code.Config;
+
 public class FileDTO {
 
 	private String flIdx;
@@ -69,8 +71,12 @@ public class FileDTO {
 		this.isDel = isDel;
 	}
 
-	public String getDownloadLink() {
-		return "/flie/" + getSavePath() + getRenameFileName() + "?originFileName=" + getOriginFileName();
+	public String getLink() {
+		return Config.UPLOAD_PATH.DESC + "/flie/" + savePath + renameFileName;
+	}
+	
+	public String getDownlaodPath() {
+		return Config.UPLOAD_PATH.DESC + savePath;
 	}
 
 	@Override
