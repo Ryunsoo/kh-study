@@ -72,7 +72,7 @@ public class FileDTO {
 	}
 
 	public String getLink() {
-		return Config.UPLOAD_PATH.DESC + "/flie/" + savePath + renameFileName;
+		return Config.DOMAIN.DESC + "/file/" + savePath + renameFileName;
 	}
 	
 	public String getDownlaodPath() {

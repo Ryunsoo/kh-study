@@ -5,7 +5,9 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
@@ -15,7 +17,9 @@
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
-
+	<!-- 배치 어노테이션 추가 -->
+	<task:annotation-driven/>
+	
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
 	<resources mapping="/file/**" location="file:///C:/CODE/upload/"/>
@@ -55,7 +59,7 @@
 				propagation : 전파속성, 기존 트랜잭션 유무 여부에 따라 새로운 트랜잭션을 생성하는 정책
 					***REQUIRED : 이미 진행중인 트랜잭션이 있으면 해당 트랜잭션에 포함, 아니면 새로운 트랜잭션 생성
 					REQUIRED_NEW : 항상 새로운 트랜잭션을 생성한다.
-					MANDATORY : 이미 진행중인 트랜잭션이 있어야만 작업을 수행, 없으면 예외를 발생시키
+					MANDATORY : 이미 진행중인 트랜잭션이 있어야만 작업을 수행, 없으면 예외를 발생시킴
 					NEVER : 진행중인 트랜잭션이 없어야만 작업을 수행, 있으면 예외를 발생시킴
 					NESTED : 진행중인 트랜잭션이 있으면 중첩된 트랜잭션 실행 (중첩된 트랜잭션에서 에러 발생 시 해당 중첩 트랜잭션만 ROLLBACK)
 					SUPPORTS : 진행중인 트랜잭션이 있으면 트랜잭션에 포함, 없으면 트랜잭션을 생성하지 않음
