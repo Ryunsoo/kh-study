@@ -7,7 +7,7 @@ public enum Config {
 	COMPANY_EMAIL("medibook90@gmail.com"),
 	SMTP_AUTHENTICATION_ID("medibook90@gmail.com"),
 	SMTP_AUTHENTICATION_PASSWORD("Qwer1234qwer"),
-	UPLOAD_PATH("C:\\CODE\\upload\\");
+	UPLOAD_PATH("/usr/local/toy/upload/");
 	
 	public final String DESC;
 	
